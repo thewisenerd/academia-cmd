@@ -12,14 +12,17 @@ def conn(self):
 	if self.session:
 		return
 
-	# defaults
-	self.session = requests.Session()
-	self.session.headers.update({
+	headers = {
 		'origin': "http://evarsity.srmuniv.ac.in",
 		'referer': "http://evarsity.srmuniv.ac.in/srmswi/usermanager/youLogin.jsp",
 
 		'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
-	})
+	};
+
+	# defaults
+	self.session = requests.Session()
+	self.session.headers.update(headers)
+
 
 	# login payload
 	payload1 = {
