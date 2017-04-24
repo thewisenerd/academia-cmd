@@ -18,11 +18,13 @@ def conn(self):
 
 		'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
 	};
+	adapter = requests.adapters.HTTPAdapter(max_retries=self.retries)
 
 	# defaults
 	self.session = requests.Session()
 	self.session.headers.update(headers)
-
+	self.session.mount('http://', adapter)
+	self.session.mount('https://', adapter)
 
 	# login payload
 	payload1 = {
@@ -39,24 +41,22 @@ def conn(self):
 	# login
 	# scrape login page for session init
 	url1 = 'http://evarsity.srmuniv.ac.in/srmswi/usermanager/youLogin.jsp'
-	for i in range(0, self.retries):
-		try:
-			r1 = self.session.request('GET', url1, timeout=self.timeout);
-		except requests.exceptions.RequestException as e:
-			self.status = e
-			if self.debug:
-				print(e)
-			continue # try again
+	try:
+		r1 = self.session.request('GET', url1, timeout=self.timeout);
+	except requests.exceptions.RequestException as e:
+		self.status = e
+		if self.debug:
+			print(e)
 
-		if not r1.status_code // 100 == 2:
-			self.status = 'network request failed with status code: ' + r1.status_code
-		else:
-			self.status = "ok"
-			break
+	if not r1.status_code // 100 == 2:
+		self.status = 'network request failed with status code: ' + r1.status_code
+	else:
+		self.status = "ok"
 
 	if "ok" != self.status:
 		return
 
+	# this will compound into (2 * self.retries ^ 2) :poker_face:
 	for i in range(0, self.retries):
 		# get captcha
 		url2 = 'http://evarsity.srmuniv.ac.in/srmswi/Captcha'
