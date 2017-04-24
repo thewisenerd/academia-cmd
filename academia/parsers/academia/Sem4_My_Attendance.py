@@ -20,7 +20,7 @@ def parse(body):
 	# tables[2] == student details
 	# tables[3] == attendance
 
-	if not len(tables) == 4:
+	if not len(tables) == 16:
 		return helpers.err('parse error')
 
 	rows = tables[3].find_all('tr')
