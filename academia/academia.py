@@ -9,7 +9,7 @@ class Academia(object):
 	password = None
 	semester = None
 	session = None
-	timeout = (2, 2)
+	timeout = (5, 5)
 	retries = 5
 	debug = True
 	methods = {}
